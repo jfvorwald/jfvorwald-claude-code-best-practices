@@ -59,11 +59,18 @@ model recall.
 Tool names, config schemas, and flags move. A config written correctly a year
 ago can be silently wrong today, and the failure mode is usually not an error,
 it is a feature that quietly does nothing. Check the actual binary, run the
-actual script, read the actual release notes for the version installed.
+actual script, look at what the session actually has.
 
-This is the single highest-yield habit on this list. See
-[lessons/2026-09-01-auditing-a-multi-agent-setup.md](lessons/2026-09-01-auditing-a-multi-agent-setup.md)
-for the case that made me write it down.
+Release notes rank below live evidence, even when they are correct. A changelog
+tells you what changed; it does not tell you what your session ended up with,
+which depends on version, model, and settings you are probably not tracking.
+
+When something cannot be verified, that gap goes in the artifact, not in your
+head. A named caveat with a two-command smoke test is engineering. The same
+doubt held only in working memory is a bug with a delay on it.
+
+This is the single highest-yield habit on this list. See both lessons below for
+the cases that made me write it down.
 
 ### 5. Finish the whole task, and say what you skipped
 
@@ -87,7 +94,8 @@ Longer write-ups from specific sessions. These are case studies, not rules.
 
 | Date | Lesson |
 |------|--------|
-| 2026-09-01 | [Auditing a multi-agent setup](lessons/2026-09-01-auditing-a-multi-agent-setup.md) |
+| 2026-09-01 | [Auditing a multi-agent setup](lessons/2026-09-01-auditing-a-multi-agent-setup.md) - finding the problems |
+| 2026-09-01 | [Fixing what the audit found](lessons/2026-09-01-fixing-what-the-audit-found.md) - closing them, which taught different things |
 
 ---
 
