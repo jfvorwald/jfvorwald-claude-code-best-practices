@@ -2,6 +2,12 @@
 
 **2026-09-01. Claude Code 2.1.252.**
 
+> **Update, 2026-09-26:** Claude Code 2.1.283 still uses `Agent` for custom
+> subagent delegation, and it now documents recursive discovery under both
+> `.claude/agents/` and `~/.claude/agents/`. The exact tool roster remains
+> version-specific. The repository now includes the audited agent files and
+> their enforcement hook, plus an executable verification script.
+
 I built a CEO/CTO/subagent hierarchy on top of Agent Teams plus standard
 subagents, gated by a Stop hook that was supposed to block completion until the
 project's check command passed. Six subagents, a hook script, a settings file.

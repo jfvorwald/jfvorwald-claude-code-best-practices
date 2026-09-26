@@ -3,6 +3,15 @@
 **2026-09-01. Claude Code 2.1.252. Companion to
 [auditing a multi-agent setup](2026-09-01-auditing-a-multi-agent-setup.md).**
 
+> **Update, 2026-09-26:** Claude Code 2.1.283 documents that subagent memory
+> automatically enables Read, Write, and Edit, so the read-only warning below
+> still applies. A later Rally run exposed a more immediate failure: the agent
+> files loaded on macOS, but their hooks referenced an absolute path from a
+> different machine. Claude Code
+> reported exit 127 as a non-blocking hook error and the agents continued. The
+> portable, tested replacement and the lesson from that incident are now in
+> this repository.
+
 The audit found nineteen problems in my agent hierarchy. This is what I learned
 closing them, which turned out to be a different set of lessons than finding
 them.
