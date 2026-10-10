@@ -114,6 +114,44 @@ Deploy ordinary changes to an isolated, protected staging environment. Promote
 to production only after explicit authorization, and promote the exact artifact
 that was reviewed. Do not rebuild a moving checkout and call it the same release.
 
+### 11. Cap every agent session up front
+
+Every dispatch carries a scope freeze, a limit of two or three review rounds,
+one final check run, and a hand-back. What happens past the cap is the
+coordinator's call, not the worker's.
+
+Open-ended workers ran 11 review rounds, or 30 review jobs, and some died
+before handing anything back. A bounded session that returns what it has is
+worth more than an unbounded one that might.
+
+### 12. When review repeats itself, change the design
+
+After two or three rounds of narrower findings in the same class, stop patching
+instances. Ask for a class fix, an explicit state table with one test per cell,
+or a product decision.
+
+First check whether the looping feature traces to my words. In the worst loop,
+11 of 13 rounds were about a button the coordinator had added on its own. If the
+agent invented it, cut it.
+
+### 13. Give me one inbox, and do not ask mid-run
+
+Anything that needs me is one item in one place: one question, lettered options
+with the recommended default first, and what it blocks. Chat stays short: what
+landed and what is running.
+
+A decision list buried in a status file grew to 74 items before I asked where
+it was. A question I cannot find is a question I cannot answer.
+
+### 14. The machine is shared too
+
+Worktrees isolate files, not processes, disk, CPU, scratch directories, or API
+quotas. Stop only the processes you started, name scratch files by ticket, and
+guard disk and rate limits in any long-running brief.
+
+One `pkill` by pattern stopped three sessions' servers. One repeated import
+filled the disk, and every agent's shell died with it.
+
 ### Style
 
 No em dashes. This is a personal preference with no deeper justification, and
@@ -205,6 +243,21 @@ when the board has less ready work. Workers finish with exact evidence and a
 result commit. The coordinator integrates, rechecks, reviews follow-ups, and
 records the accepted commit.
 
+### For a dispatched worker
+
+Put the cap and the hand-back in the first prompt, not after the session runs
+long:
+
+```text
+Implement T17 in this worktree from accepted commit <SHA>. Paths: <PATHS>.
+Ports: <PORTS>. Scope is frozen; anything that wires into another ticket becomes
+a follow-up ticket. If you need approval, send me the plan and stop; I will
+resume you. At most three review rounds, reviewing against <BASE>: fix real
+Medium-or-higher findings and one-line Lows, and record the rest with job IDs.
+Do not edit code while a test run is serving it. Then one final full check run,
+the report, stop only the processes you started, and hand back.
+```
+
 ### For a research spike
 
 State the claim the harness is supposed to test and the evidence it cannot
@@ -238,6 +291,20 @@ that reviewed release. Promote that artifact, not a rebuild of the checkout.
   enough. Git history is part of the privacy boundary.
 - After a deploy, verify the user's real client and cached path, not only the
   server artifact.
+- Never edit code while a test run is serving it. Restart on the final commit
+  and rerun.
+- Before trusting a fast review pass, check which commit range it reviewed.
+- Copy counts from logs with a command, never by hand.
+- Prove a new test can fail before counting it as coverage.
+- Run every gate once with its primary path missing, review tooling included.
+- A fix proven only on a model of the system still needs a check against the
+  real one.
+- Before saying something cannot be found, search every surface the person
+  works in, not only the repository.
+- Hand credential steps to the person as an exact command. Do not route around
+  a refusal.
+- After publishing a fix to shared configuration, update and test every
+  installed copy.
 
 ---
 
@@ -251,6 +318,8 @@ Longer write-ups from specific sessions. These are case studies, not rules.
 | 2026-09-01 | [Fixing what the audit found](lessons/2026-09-01-fixing-what-the-audit-found.md) - closing them, which taught different things |
 | 2026-09-26 | [Running parallel agents on a real product](lessons/2026-09-26-running-parallel-agents-on-rally.md) - what Rally taught about readiness, integration, evidence, and enforcement |
 | 2026-09-26 | [What transferred across the other repositories](lessons/2026-09-26-cross-repo-lessons.md) - authority, staleness, privacy, deterministic checks, and live state |
+| 2026-10-09 | [When review stops converging](lessons/2026-10-09-when-review-stops-converging.md) - review loops, session caps, noisy reviewers, and runs that were not evidence |
+| 2026-10-09 | [The machine and the person are shared surfaces](lessons/2026-10-09-the-machine-and-the-person-are-shared.md) - processes, disk, quotas, agent messaging, and one inbox for decisions |
 
 ---
 
@@ -267,6 +336,11 @@ binary and the official documentation for
 [custom subagents](https://code.claude.com/docs/en/sub-agents) and
 [hooks](https://code.claude.com/docs/en/hooks). Those pages are supporting
 evidence, not a substitute for `./scripts/verify.sh` on the version being used.
+
+The October 9 lessons come from Rally's coordinator and worker sessions between
+September 26 and October 9, with Claude Code 2.1.293 installed at the time of
+writing. They record observed behavior from that period. The configuration
+cross-check above was not repeated for 2.1.293.
 
 ## How to add an entry
 
