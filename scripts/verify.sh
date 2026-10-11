@@ -13,6 +13,12 @@ for agent in .claude/agents/*.md; do
   grep -q '^description:' "$agent"
 done
 
+for skill in .claude/skills/*/SKILL.md; do
+  grep -q '^name:' "$skill"
+  grep -q '^description: Use when' "$skill"
+done
+
+printf 'Verified %s skill definitions.\n' "$(find .claude/skills -name SKILL.md | wc -l | tr -d ' ')"
 printf 'Verified %s agent definitions.\n' "$(find .claude/agents -name '*.md' | wc -l | tr -d ' ')"
 if command -v claude >/dev/null 2>&1; then
   claude --version

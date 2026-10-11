@@ -183,6 +183,16 @@ It fails closed and covers the capability distinctions that prompts alone cannot
 guarantee. Do not add `memory:` to a read-only agent: current Claude Code enables
 Read, Write, and Edit for subagent memory management.
 
+### Set it up somewhere else
+
+The skill [`bootstrapping-my-workflow`](.claude/skills/bootstrapping-my-workflow/SKILL.md)
+installs this setup into another project: the standing instructions go into its
+`CLAUDE.md`, and the agents and guard hook are copied together. It inventories
+what is already there first and never overwrites it. To use it from any project,
+copy the skill folder to `~/.claude/skills/` and ask Claude to set up how you
+work. Its [standing instructions](.claude/skills/bootstrapping-my-workflow/standing-instructions.md)
+are a short form of the working agreement above.
+
 ### Verify the setup
 
 ```sh
