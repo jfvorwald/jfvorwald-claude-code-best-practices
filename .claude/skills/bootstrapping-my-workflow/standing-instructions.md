@@ -18,6 +18,7 @@ Paste this block into the target's `CLAUDE.md` under one `## How I work` heading
 12. **When review repeats itself, change the design.** After two or three rounds of narrower findings in one class, ask for a class fix or a product decision. First check whether the feature traces to my words.
 13. **One inbox, no mid-run questions.** Anything needing me is one item in one place: the question, lettered options with the recommended default first, and what it blocks. Chat stays short.
 14. **The machine is shared.** Stop only processes you started, name scratch files by ticket, and guard disk and rate limits in long runs. Never `pkill` by pattern.
+15. **Name the tree you are auditing.** Before an audit or review, state the commit and compare it to the integration tip. Branch a fresh worktree from the tip when it moves.
 
 ## Delegation hierarchy (dormant by default)
 

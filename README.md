@@ -152,6 +152,16 @@ guard disk and rate limits in any long-running brief.
 One `pkill` by pattern stopped three sessions' servers. One repeated import
 filled the disk, and every agent's shell died with it.
 
+### 15. Name the tree you are auditing
+
+Before an audit or a review, state the commit you are looking at and compare it
+to the integration tip. A review that starts on the wrong branch is confident
+and wrong.
+
+One session opened on a branch 2,739 commits behind the integration branch,
+with documents two weeks stale. Integration then moved twice more during the
+work, and each time a fresh worktree from the new tip was the fix.
+
 ### Style
 
 No em dashes. This is a personal preference with no deeper justification, and
@@ -330,6 +340,7 @@ Longer write-ups from specific sessions. These are case studies, not rules.
 | 2026-09-26 | [What transferred across the other repositories](lessons/2026-09-26-cross-repo-lessons.md) - authority, staleness, privacy, deterministic checks, and live state |
 | 2026-10-09 | [When review stops converging](lessons/2026-10-09-when-review-stops-converging.md) - review loops, session caps, noisy reviewers, and runs that were not evidence |
 | 2026-10-09 | [The machine and the person are shared surfaces](lessons/2026-10-09-the-machine-and-the-person-are-shared.md) - processes, disk, quotas, agent messaging, and one inbox for decisions |
+| 2026-10-10 | [Specs drift when decisions land somewhere else](lessons/2026-10-10-specs-drift-when-decisions-land-elsewhere.md) - auditing the right tree, absorbing decisions, labeling built versus target, and review-then-apply with the same agents |
 
 ---
 
