@@ -68,8 +68,38 @@ class AgentGuardTest(unittest.TestCase):
         ):
             self.assertEqual(2, self.invoke("protect-tests", "Bash", {"command": command}).returncode, command)
 
+    def test_implementer_cannot_update_snapshots_with_other_spellings(self):
+        for command in (
+            "jest -wu",
+            "pnpm exec vitest -ru",
+            "jest --update-snapshot",
+            "jest --updatesnapshot",
+            "jest --update_snapshot=true",
+        ):
+            self.assertEqual(2, self.invoke("protect-tests", "Bash", {"command": command}).returncode, command)
+
+    def test_implementer_cannot_point_runner_output_at_tests(self):
+        for command in (
+            "python3 -m pytest --junitxml=tests/test_api.py",
+            "python3 -m pytest --junit-xml tests/test_api.py",
+            "python3 -m pytest --basetemp=tests",
+            "python3 -m pytest -o cache_dir=tests/cache",
+            "go test -coverprofile=api_test.go ./...",
+            "go test -o api_test.go ./...",
+            "pnpm exec vitest run --outputFile=src/api.test.ts",
+        ):
+            self.assertEqual(2, self.invoke("protect-tests", "Bash", {"command": command}).returncode, command)
+
     def test_implementer_can_still_run_tests(self):
-        for command in ("pnpm exec vitest run src/api.test.ts", "python3 -m pytest tests/test_api.py -q", "go test ./..."):
+        for command in (
+            "pnpm exec vitest run src/api.test.ts",
+            "python3 -m pytest tests/test_api.py -q",
+            "python3 -m pytest -k update tests/test_api.py",
+            "python3 -m pytest --junitxml=build/report.xml tests/test_api.py",
+            "go test ./...",
+            "go test -run TestUpdate -count=1 ./...",
+            "jest --ci",
+        ):
             self.assertEqual(0, self.invoke("protect-tests", "Bash", {"command": command}).returncode, command)
 
     def test_test_writer_cannot_write_source(self):

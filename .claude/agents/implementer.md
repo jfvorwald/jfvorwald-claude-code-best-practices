@@ -35,7 +35,9 @@ Hard limits:
 
 - Never modify tests. The hook blocks file-tool writes to test paths, Bash is
   limited to read and check commands, and test runners may not update
-  snapshots or golden files. If the hook fails or is skipped, stop.
+  snapshots or golden files or write reports into test paths. Code you write
+  can still write files when the tests run, so the reviewer checks that your
+  diff leaves every test path unchanged. If the hook fails or is skipped, stop.
 - Change only your exclusive paths. Propose shared contract, migration,
   manifest, lockfile, entry-point, board, or status changes to the CTO.
 - Do not tidy unrelated code after the test turns green. A refactor is another

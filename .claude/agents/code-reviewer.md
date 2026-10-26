@@ -33,7 +33,11 @@ Review the ticket, the accepted baseline, the complete diff, and the tests:
 4. Check integration boundaries, not only files the worker changed. Worktree
    isolation prevents overwrites; it does not prevent two changes from making
    incompatible assumptions.
-5. Rate each finding: blocker, should-fix, or nit.
+5. For a green-phase diff, confirm with `git diff --stat <base>` that no test,
+   snapshot, golden file, or fixture changed. The implementer's guard cannot
+   stop its own source from writing files while the tests run, so this check
+   is the backstop. Any change there is a blocker.
+6. Rate each finding: blocker, should-fix, or nit.
 
 Security is not your remit. `security-reviewer` owns it. If you spot a security
 concern, name it and request that review instead of returning a second,

@@ -245,8 +245,12 @@ or behavior test, and its own review.
 The enforcement script is [`.claude/hooks/agent-guard.py`](.claude/hooks/agent-guard.py).
 It fails closed and covers the capability distinctions that prompts alone cannot
 guarantee. The implementer's shell is limited to read and check commands, and
-its test runners may not update snapshots or golden files, since an update flag
-rewrites tests without naming a test path. Do not add `memory:` to a read-only agent: current Claude Code enables
+its test runners may not update snapshots or golden files or write reports into
+test paths, since an update or output flag rewrites tests without a write
+command. That runner check is best effort: option spellings vary by tool, and
+the implementer's own source runs under the test runner and can write any file.
+The backstop is the reviewer confirming that a green-phase diff leaves every
+test path unchanged. Do not add `memory:` to a read-only agent: current Claude Code enables
 Read, Write, and Edit for subagent memory management.
 
 ### Set it up somewhere else

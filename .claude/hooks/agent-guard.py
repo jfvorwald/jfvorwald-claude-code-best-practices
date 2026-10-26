@@ -40,15 +40,32 @@ READONLY_GIT = {
     "describe",
     "name-rev",
 }
-SNAPSHOT_UPDATE_FLAGS = {
-    "-u",
-    "--update",
-    "--updateSnapshot",
-    "--update-snapshots",
-    "--snapshot-update",
-    "-update",
-    "--force-regen",
+# Option names below are compared after option_name() folds case, dashes and underscores.
+SNAPSHOT_UPDATE_OPTIONS = {
+    "u",
+    "update",
+    "updatesnapshot",
+    "updatesnapshots",
+    "snapshotupdate",
+    "forceregen",
 }
+OUTPUT_OPTIONS = {
+    "o",
+    "junitxml",
+    "resultlog",
+    "reportlogfile",
+    "basetemp",
+    "outputfile",
+    "outputdir",
+    "coverprofile",
+    "covreport",
+    "cpuprofile",
+    "memprofile",
+    "blockprofile",
+    "mutexprofile",
+    "trace",
+}
+JS_RUNNERS = {"vitest", "jest", "playwright", "npm", "pnpm", "yarn", "bun", "npx"}
 READ_COMMANDS = {
     "pwd",
     "ls",
@@ -171,14 +188,38 @@ def worker_command(command: str) -> bool:
     return executable in {"check.sh", "verify.sh"} or command.strip().endswith("/.claude/check.sh")
 
 
-def updates_snapshots(command: str) -> bool:
-    # worker-bash already refuses shell writes; this closes the test runners it allows,
-    # which rewrite snapshot and golden files when asked to update them.
+def option_name(token: str) -> str:
+    return re.sub(r"[-_]", "", token.lstrip("-").split("=", 1)[0]).lower()
+
+
+def names_a_test_path(value: str) -> bool:
+    return any(piece and is_test_path(piece) for piece in re.split(r"[=:,]", value))
+
+
+def runner_writes_tests(command: str) -> bool:
+    # worker-bash already refuses shell writes. This covers the test runners it allows, which can
+    # rewrite snapshots or golden files when asked to update them, or write a report over a test
+    # file. It is best effort: the implementer's source runs under the runner and can write any
+    # file, so reviewers must still check that the diff leaves test paths unchanged.
     try:
         tokens = shlex.split(command)
     except ValueError:
         return True
-    return any(token.split("=", 1)[0] in SNAPSHOT_UPDATE_FLAGS for token in tokens)
+    js_runner = any(os.path.basename(token) in JS_RUNNERS for token in tokens)
+    for index, token in enumerate(tokens):
+        if not token.startswith("-") or token in {"-", "--"}:
+            continue
+        name = option_name(token)
+        if name in SNAPSHOT_UPDATE_OPTIONS:
+            return True
+        if js_runner and not token.startswith("--") and token[1:].isalpha() and "u" in token[1:]:
+            return True
+        if "=" in token and names_a_test_path(token.split("=", 1)[1]):
+            return True
+        if name in OUTPUT_OPTIONS and "=" not in token and index + 1 < len(tokens):
+            if names_a_test_path(tokens[index + 1]):
+                return True
+    return False
 
 
 def find_agent_type(value: Any) -> str | None:
@@ -220,8 +261,8 @@ def run(mode: str, payload: dict[str, Any]) -> int:
     if mode == "protect-tests":
         if tool_name == "Bash":
             command = tool_input.get("command", "")
-            if not isinstance(command, str) or updates_snapshots(command):
-                return deny("the implementer cannot update snapshots or golden files")
+            if not isinstance(command, str) or runner_writes_tests(command):
+                return deny("the implementer cannot make a test runner write snapshots, golden files or reports into test paths")
             return 0
         paths = input_paths(tool_input)
         if not paths:

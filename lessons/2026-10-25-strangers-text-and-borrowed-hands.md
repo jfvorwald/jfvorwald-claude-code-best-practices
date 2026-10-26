@@ -163,6 +163,15 @@ a `rejected` row, and retired ones are marked with the date and the replacement.
   for the implementer, with tests, and the repository's test was checked by
   removing the rule and watching it fail.
 
+  The automated security review of that commit found the next layer within the
+  hour: combined short flags (`jest -wu`), other spellings of the same option,
+  and report flags such as `--junitxml=tests/test_api.py` that write over a
+  test file. All of them were real. They are closed now, but the honest
+  conclusion is the one from the budget hook: this check limits a cooperating
+  worker, because the implementer's source runs under the test runner and can
+  write anything. The boundary that holds is the reviewer diffing the test
+  paths, which is now an explicit step in its brief.
+
 ## What I would keep
 
 - outside text and hook text treated as data, with read-only briefs saying so
