@@ -8,7 +8,8 @@ earn their place: a rule that survived contact with real work, or a failure
 worth not repeating. Nothing goes in because it sounded good in a blog post.
 
 The configuration shape was cross-checked against the installed Claude Code
-2.1.283 and its current documentation on September 26, 2026. The guard's
+2.1.283 and its current documentation on September 26, 2026, and against the
+documentation again with 2.1.293 on October 25. The guard's
 allowed and denied paths have executable tests. Project trust and live hook
 invocation still need an interactive smoke test after cloning. Tool names and
 configuration fields are versioned facts, so verify again after an upgrade.
@@ -243,7 +244,9 @@ or behavior test, and its own review.
 
 The enforcement script is [`.claude/hooks/agent-guard.py`](.claude/hooks/agent-guard.py).
 It fails closed and covers the capability distinctions that prompts alone cannot
-guarantee. Do not add `memory:` to a read-only agent: current Claude Code enables
+guarantee. The implementer's shell is limited to read and check commands, and
+its test runners may not update snapshots or golden files, since an update flag
+rewrites tests without naming a test path. Do not add `memory:` to a read-only agent: current Claude Code enables
 Read, Write, and Edit for subagent memory management.
 
 ### Set it up somewhere else
@@ -452,8 +455,23 @@ cross-check above was not repeated for 2.1.293.
 The October 25 lessons come from Rally sessions between October 10 and
 October 25, still on Claude Code 2.1.293, and from the session that wrote them.
 They were drawn from that period's memory notes, coordinator rules, run-tool
-documentation, and the person's own messages. The configuration cross-check was
-again not repeated.
+documentation, and the person's own messages.
+
+On October 25 the configuration shape was checked again against the current
+hooks and subagent documentation, with 2.1.293 installed. The documentation is
+not version-pinned. It confirms that a command hook's `args` field runs
+`command` directly with that argument list and no shell, that subagent
+frontmatter supports `PreToolUse` hooks, and that a matcher's hooks run in
+parallel. Two points matter for verification. Project subagent hooks run only
+after the folder's workspace trust dialog is accepted, which has been required
+since 2.1.218, and a `claude -p` session does not count as accepting it: the
+subagent still runs, without its hooks, and the error goes only to the debug
+log. So a non-interactive smoke test of a project agent proves nothing about its
+guard. How exit 2 from one of several parallel hooks combines is not
+documented; the implementer's two Bash hooks each deny on their own. Whether
+`${CLAUDE_PROJECT_DIR}` expands in frontmatter hooks is documented for hooks in
+general but not specifically for subagents, which is one more reason to run the
+interactive allowed and denied check after cloning.
 
 ## How to add an entry
 

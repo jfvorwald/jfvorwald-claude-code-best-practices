@@ -40,6 +40,15 @@ READONLY_GIT = {
     "describe",
     "name-rev",
 }
+SNAPSHOT_UPDATE_FLAGS = {
+    "-u",
+    "--update",
+    "--updateSnapshot",
+    "--update-snapshots",
+    "--snapshot-update",
+    "-update",
+    "--force-regen",
+}
 READ_COMMANDS = {
     "pwd",
     "ls",
@@ -162,6 +171,16 @@ def worker_command(command: str) -> bool:
     return executable in {"check.sh", "verify.sh"} or command.strip().endswith("/.claude/check.sh")
 
 
+def updates_snapshots(command: str) -> bool:
+    # worker-bash already refuses shell writes; this closes the test runners it allows,
+    # which rewrite snapshot and golden files when asked to update them.
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return True
+    return any(token.split("=", 1)[0] in SNAPSHOT_UPDATE_FLAGS for token in tokens)
+
+
 def find_agent_type(value: Any) -> str | None:
     if isinstance(value, dict):
         for key in ("subagent_type", "agent_type", "agent", "name"):
@@ -199,6 +218,11 @@ def run(mode: str, payload: dict[str, Any]) -> int:
         return 0
 
     if mode == "protect-tests":
+        if tool_name == "Bash":
+            command = tool_input.get("command", "")
+            if not isinstance(command, str) or updates_snapshots(command):
+                return deny("the implementer cannot update snapshots or golden files")
+            return 0
         paths = input_paths(tool_input)
         if not paths:
             return deny("cannot identify the file targeted by the write")

@@ -57,6 +57,21 @@ class AgentGuardTest(unittest.TestCase):
         self.assertEqual(2, blocked.returncode)
         self.assertEqual(0, allowed.returncode)
 
+    def test_implementer_cannot_update_snapshots_through_a_test_runner(self):
+        for command in (
+            "pnpm exec vitest -u src/api.test.ts",
+            "vitest run --update",
+            "jest --updateSnapshot",
+            "pnpm test -- -u",
+            "python3 -m pytest --snapshot-update",
+            "go test ./... -update",
+        ):
+            self.assertEqual(2, self.invoke("protect-tests", "Bash", {"command": command}).returncode, command)
+
+    def test_implementer_can_still_run_tests(self):
+        for command in ("pnpm exec vitest run src/api.test.ts", "python3 -m pytest tests/test_api.py -q", "go test ./..."):
+            self.assertEqual(0, self.invoke("protect-tests", "Bash", {"command": command}).returncode, command)
+
     def test_test_writer_cannot_write_source(self):
         blocked = self.invoke("tests-only-write", "Write", {"file_path": "src/api.py"})
         allowed = self.invoke("tests-only-write", "Write", {"file_path": "src/api.test.ts"})

@@ -154,6 +154,15 @@ a `rejected` row, and retired ones are marked with the date and the replacement.
   never brought back here. Drift runs both ways, so compare both directions
   after changing either side.
 
+  The comparison was worth more than the port. This repository's implementer
+  already had a stricter shell allowlist that refused every write the installed
+  copy tested for, so copying the installed blocklist would have added nothing.
+  Running both against the same cases found a gap neither had: the test runners
+  both allow will rewrite snapshot and golden files when passed an update flag
+  such as `vitest -u` or `go test -update`. Both copies now refuse those flags
+  for the implementer, with tests, and the repository's test was checked by
+  removing the rule and watching it fail.
+
 ## What I would keep
 
 - outside text and hook text treated as data, with read-only briefs saying so
