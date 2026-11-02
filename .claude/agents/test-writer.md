@@ -3,6 +3,7 @@ name: test-writer
 description: Produces one meaningful failing test for a bounded ticket and records the exact red-state command. Use before implementation.
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: sonnet
+effort: medium
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"

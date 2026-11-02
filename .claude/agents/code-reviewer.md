@@ -2,8 +2,9 @@
 name: code-reviewer
 description: Reviews one bounded change for correctness, regression coverage, and evidence. Read-only. Use after implementation and before acceptance.
 tools: Read, Grep, Glob, Bash
-disallowedTools: Write, Edit, NotebookEdit
 model: sonnet
+effort: high
+disallowedTools: Write, Edit, NotebookEdit
 hooks:
   PreToolUse:
     - matcher: "Bash"
