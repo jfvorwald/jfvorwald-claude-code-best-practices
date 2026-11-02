@@ -2,8 +2,9 @@
 name: security-reviewer
 description: Audits a bounded diff or module for vulnerabilities and enforcement gaps. Read-only. Use for auth, input, secrets, permissions, storage, or external calls.
 tools: Read, Grep, Glob, Bash
-disallowedTools: Write, Edit, NotebookEdit
 model: sonnet
+effort: high
+disallowedTools: Write, Edit, NotebookEdit
 hooks:
   PreToolUse:
     - matcher: "Bash"

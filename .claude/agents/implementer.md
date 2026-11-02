@@ -3,6 +3,7 @@ name: implementer
 description: Makes one confirmed failing test pass with the smallest source change. Use for the TDD green phase after the test-writer handoff.
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: sonnet
+effort: medium
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"

@@ -3,6 +3,7 @@ name: debugger
 description: Root-causes an unclear failure with one tested hypothesis at a time. Use after two failed fixes or when the failure mechanism is not obvious.
 tools: Read, Grep, Glob, Bash, Edit
 model: opus
+effort: high
 hooks:
   PreToolUse:
     - matcher: "Bash"

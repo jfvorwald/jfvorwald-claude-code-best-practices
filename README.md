@@ -216,6 +216,68 @@ production already had.
 A deploy from `main` rolled the public privacy page back a version and removed
 a launch film, because the branch that had published them was never merged.
 
+### 21. Model and effort tiers live in the role file, and the launch proves them
+
+Each role carries `model:` and `effort:` in its frontmatter: Sonnet at medium
+for tests and implementation, Sonnet at high for reviews, Opus at high for
+debugging and the coordinator, Haiku at low for docs. The main session's model
+does not decide the workers' models. After each launch, read back the model and
+effort that actually ran and record them. If a model is unavailable, report it.
+Do not substitute one or raise effort.
+
+Dispatch that bypasses the role files (T3's `delegate_task` loaded none of them)
+runs the worker with no role text, tools list, or hooks. Use the `Agent` tool
+with the role's `subagent_type`, and try one forbidden action to see the hook
+fire. Changing a tier is my decision, not the coordinator's.
+
+### 22. A usage limit is a handoff, so write it before the limit
+
+Read the live usage before assigning work, put a stop time in every brief, and
+have each worker push a checkpoint before it hands back. A handoff file names
+the exact commits, which checkout holds what, what is blocked, what was
+verified and on which commit, and what to leave alone. Historical records stay
+historical: do not relabel another provider's work or a failed review job.
+
+### 23. End review with a pin, not another round
+
+One review and one confirming round. Past that, defer non-critical findings to
+follow-up tickets that begin with a failing test. After two failed fix rounds
+on the same bug, hand it to the debugger. Every review fix an implementer makes
+under the test-protection hook is untested, so budget a test-writer pin round
+and list untested fix commits in the report. Disputes with the architecture
+document go to the coordinator, not into a reviewer rebuttal.
+
+### 24. A verdict names one commit and one scope
+
+Approvals, CI runs, and review jobs belong to the commit they ran on. A newer
+commit gets its own claim or none. An owner decision changes scope, not source:
+the ticket returns to review but an earlier FAIL stays FAIL until a confirming
+run. Check that the real producer supplies the data a feature needs before
+calling it accepted, and pin the real adapter, not only a fake.
+
+### 25. Authority comes from the current message and the written rule
+
+A memory note or a previous session's lesson about my permissions is a pointer
+to check, not an order. When a normal merge is refused or a classifier blocks
+an admin bypass, record it on the issue, leave the PR ready, and keep working
+on independent tickets. Never alter protections.
+
+### 26. Re-ask deferred decisions when their milestone lands
+
+A decision whose default was "safe until milestone N" goes at the top of
+milestone N's security review. Ticket-level review will not notice that a later
+ticket made the deferred path live.
+
+### 27. Your tools are part of the test environment
+
+Parallel workers make unrelated browser tests time out together, so run the
+wave suite when workers are idle. The orchestrator can probe local ports and
+inflate request counts. A live `claude` end-to-end run writes a trust entry to
+`~/.claude.json`, so build a replay test first. A `brew upgrade` of Claude Code
+kills the binary path spawned teammates relaunch from, so restart the lead and
+check pane liveness. Cap worker handoff length: about 16,000 characters was
+truncated in delivery. Quote every value in text meant for a shell paste.
+
 ### Style
 
 No em dashes. This is a personal preference with no deeper justification, and
@@ -228,15 +290,19 @@ it is written down because style rules only work when the model can find them.
 The repository contains the seven project-level subagents under
 [`.claude/agents`](.claude/agents). They are intentionally narrow:
 
-| Agent | Owns | Writes |
-| --- | --- | --- |
-| [`cto`](.claude/agents/cto.md) | Epic decomposition, readiness, assignment, integration, acceptance | Ledger, shared coordination surfaces, integration |
-| [`test-writer`](.claude/agents/test-writer.md) | Red phase | Tests and fixtures only |
-| [`implementer`](.claude/agents/implementer.md) | Green phase | Source only |
-| [`debugger`](.claude/agents/debugger.md) | Root cause after unclear or repeated failure | Existing files only |
-| [`code-reviewer`](.claude/agents/code-reviewer.md) | Correctness, coverage, evidence | Nothing |
-| [`security-reviewer`](.claude/agents/security-reviewer.md) | Security and enforcement review | Nothing |
-| [`docs-writer`](.claude/agents/docs-writer.md) | Accepted behavior in README and docs | Documentation only |
+| Agent | Model / effort | Owns | Writes |
+| --- | --- | --- | --- |
+| [`cto`](.claude/agents/cto.md) | Opus / high | Epic decomposition, readiness, assignment, integration, acceptance | Ledger, shared coordination surfaces, integration |
+| [`test-writer`](.claude/agents/test-writer.md) | Sonnet / medium | Red phase | Tests and fixtures only |
+| [`implementer`](.claude/agents/implementer.md) | Sonnet / medium | Green phase | Source only |
+| [`debugger`](.claude/agents/debugger.md) | Opus / high | Root cause after unclear or repeated failure | Existing files only |
+| [`code-reviewer`](.claude/agents/code-reviewer.md) | Sonnet / high | Correctness, coverage, evidence | Nothing |
+| [`security-reviewer`](.claude/agents/security-reviewer.md) | Sonnet / high | Security and enforcement review | Nothing |
+| [`docs-writer`](.claude/agents/docs-writer.md) | Haiku / low | Accepted behavior in README and docs | Documentation only |
+
+The model and effort are in each file's frontmatter and are my choice for the
+role, not a general recommendation. The coordinator must not promote routine
+Sonnet work to the main session's model by inheritance ([rule 21](#21-model-and-effort-tiers-live-in-the-role-file-and-the-launch-proves-them)).
 
 Red and green each have one owner. Refactoring is deliberately not a phase hidden
 inside implementation. If it matters, give it a ticket, a failing characterization
@@ -434,6 +500,7 @@ Longer write-ups from specific sessions. These are case studies, not rules.
 | 2026-10-10 | [Specs drift when decisions land somewhere else](lessons/2026-10-10-specs-drift-when-decisions-land-elsewhere.md) - auditing the right tree, absorbing decisions, labeling built versus target, and review-then-apply with the same agents |
 | 2026-10-25 | [What evidence costs](lessons/2026-10-25-what-evidence-costs.md) - test tiers, budgets, fresh handoffs, rules before code, review by path, and generated session handoffs |
 | 2026-10-25 | [Strangers' text and borrowed hands](lessons/2026-10-25-strangers-text-and-borrowed-hands.md) - untrusted reports, agents acting as the person, where approval lives, deploy bases, secrets, and drift in both directions |
+| 2026-11-02 | [Tiers, handoffs, and honest verdicts](lessons/2026-11-02-tiers-handoffs-and-honest-verdicts.md) - model and effort routing, usage-limit handoffs, ending review with pins, verdicts tied to one commit, and tools that disturb tests |
 
 ---
 
@@ -460,6 +527,13 @@ The October 25 lessons come from Rally sessions between October 10 and
 October 25, still on Claude Code 2.1.293, and from the session that wrote them.
 They were drawn from that period's memory notes, coordinator rules, run-tool
 documentation, and the person's own messages.
+
+The November 2 lessons come from Taskville sessions between October 30 and
+November 2, with Claude Code 2.1.316 installed when it was written (I did not
+record which version each session ran), drawn from its lessons log, the
+coordinator handoff file, the benchmark record of actual worker launches, and
+the person's own messages. The launch record's effort labels are not fully
+clean, and the lesson says so. The configuration cross-check was not repeated.
 
 On October 25 the configuration shape was checked again against the current
 hooks and subagent documentation, with 2.1.293 installed. The documentation is

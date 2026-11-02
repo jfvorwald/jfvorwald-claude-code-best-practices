@@ -3,6 +3,7 @@ name: docs-writer
 description: Updates README and docs to match behavior that has been accepted. Use after integration, not to speculate before code exists.
 tools: Read, Grep, Glob, Write, Edit
 model: haiku
+effort: low
 hooks:
   PreToolUse:
     - matcher: "Write|Edit|NotebookEdit"
