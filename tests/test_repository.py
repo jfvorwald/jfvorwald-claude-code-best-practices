@@ -38,6 +38,25 @@ class RepositoryLayoutTest(unittest.TestCase):
         missing = [link for link in local_links if not (ROOT / link.split("#", 1)[0]).exists()]
         self.assertEqual([], missing)
 
+    def test_rule_lists_stay_in_step(self):
+        readme = (ROOT / "README.md").read_text()
+        short = (SKILLS / "bootstrapping-my-workflow" / "standing-instructions.md").read_text()
+        agents = (ROOT / "AGENTS.md").read_text()
+        long_rules = [int(n) for n in re.findall(r"^### (\d+)\. ", readme, re.M)]
+        short_rules = [int(n) for n in re.findall(r"^(\d+)\. \*\*", short, re.M)]
+        self.assertEqual(list(range(1, len(long_rules) + 1)), long_rules)
+        self.assertEqual(long_rules, short_rules)
+        self.assertIn(f"(rules 1 to {len(long_rules)})", agents)
+
+    def test_codex_mirrors_match_role_files(self):
+        import subprocess, sys
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts" / "sync_codex_agents.py"), "--check"],
+            capture_output=True, text=True,
+        )
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
+
+
 class SkillLayoutTest(unittest.TestCase):
     def skill_files(self):
         return sorted(SKILLS.glob("*/SKILL.md"))
