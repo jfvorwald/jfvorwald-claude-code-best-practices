@@ -7,6 +7,7 @@ cd "$repo_root"
 
 test -x .claude/hooks/agent-guard.py
 python3 -m unittest discover -s tests -p 'test_*.py'
+python3 scripts/sync_codex_agents.py --check
 
 for agent in .claude/agents/*.md; do
   grep -q '^name:' "$agent"

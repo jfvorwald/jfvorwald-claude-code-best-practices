@@ -30,3 +30,17 @@ is a design change wearing a bug's clothes. Return the evidence to the CTO.
 
 If two fixes fail, stop. Report what each attempt ruled out and escalate rather
 than trying a third variation.
+
+## Runtime selection
+
+On Claude, the frontmatter model and effort apply. On Codex or T3, the owner's
+mapping for this role is Astra at high effort. Role text configures nothing there:
+the coordinator sets the model and effort in the launch arguments and reads
+back what ran. If you find yourself on a different model or effort, report it.
+Never substitute a model or raise effort.
+
+## Final line
+
+End every hand-back with exactly one line:
+`RESULT <commit or none> merged-with <base SHA or none> check <PASS|FAIL|NOT RUN>`.
+A hand-back without it is treated as still running.
